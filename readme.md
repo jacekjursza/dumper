@@ -1,4 +1,7 @@
 # File Merger Application
+![image](https://github.com/user-attachments/assets/9e5648a6-b8fb-451c-babe-b419f534e59f)
+![image](https://github.com/user-attachments/assets/0989e932-2385-4428-917c-3f8687e2ba2c)
+![image](https://github.com/user-attachments/assets/6e7d14f5-dfab-4fb0-a234-bac9bc966e35)
 
 ## Overview
 
