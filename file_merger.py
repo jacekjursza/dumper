@@ -18,13 +18,14 @@ logging.basicConfig(level=logging.DEBUG, format='%(asctime)s - %(levelname)s - %
 
 class FileMerger:
 
-    def __init__(self, file_tree, directory_path, exclude_patterns, db_manager, convert_html_to_md, css_selectors):
+    def __init__(self, file_tree, directory_path, exclude_patterns, db_manager, convert_html_to_md, css_selectors, remove_imports):
         self.file_tree = file_tree
         self.directory_path = directory_path
         self.exclude_patterns = exclude_patterns
         self.db_manager = db_manager
         self.convert_html_to_md = convert_html_to_md
         self.css_selectors = [selector.strip() for selector in css_selectors.split(';') if selector.strip()] if css_selectors else []
+        self.remove_imports = remove_imports
 
     def merge_files(self, output_file_path):
         with open(output_file_path, 'w', encoding='utf-8') as outfile:
@@ -70,7 +71,6 @@ class FileMerger:
     def process_file(self, file_path, outfile, symbols_to_exclude, relative_path):
         _, file_extension = os.path.splitext(file_path)
         outfile.write(f'\n\n##---> {relative_path}\n\n')
-
         if file_extension.lower() == '.py':
             self.process_python_file(file_path, outfile, symbols_to_exclude)
         else:
@@ -81,7 +81,7 @@ class FileMerger:
             file_content = infile.read()
         try:
             tree = ast.parse(file_content, filename=file_path)
-            modifier = ASTModifier(symbols_to_exclude, file_path)
+            modifier = ASTModifier(symbols_to_exclude, file_path, self.remove_imports)
             modified_tree = modifier.visit(tree)
             ast.fix_missing_locations(modified_tree)
             modified_code = astor.to_source(modified_tree)
@@ -102,10 +102,21 @@ class FileMerger:
 
 class ASTModifier(ast.NodeTransformer):
 
-    def __init__(self, symbols_to_exclude, file_path):
+    def __init__(self, symbols_to_exclude, file_path, remove_imports):
         self.symbols_to_exclude = symbols_to_exclude
         self.file_path = os.path.normpath(file_path)
+        self.remove_imports = remove_imports
         super().__init__()
+
+    def visit_Import(self, node):
+        if self.remove_imports:
+            return None
+        return node
+
+    def visit_ImportFrom(self, node):
+        if self.remove_imports:
+            return None
+        return node
 
     def visit_ClassDef(self, node):
         full_symbol_name = (self.file_path, node.name, 'class')

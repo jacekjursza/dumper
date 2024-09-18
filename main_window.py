@@ -75,6 +75,7 @@ class MainWindow(QMainWindow):
         self.directory_path = ''
         self.file_tree = {}
         self.excluded_files = set()
+        self.remove_imports = False
         self._build_ui()
         self.load_project_settings()
         self.load_remote_settings()
@@ -102,10 +103,16 @@ class MainWindow(QMainWindow):
         self._build_tab3()
         self.tabs.addTab(self.tab3, 'Remote Docs')
 
-        # Create output file button
+        self.remove_imports_checkbox = QCheckBox("Remove Python imports")
+        self.remove_imports_checkbox.stateChanged.connect(self.on_remove_imports_changed)
+        self.layout.addWidget(self.remove_imports_checkbox)
+
         self.create_output_button = QPushButton('Create output file')
         self.create_output_button.clicked.connect(self.merge_selected_files)
         self.layout.addWidget(self.create_output_button)
+
+    def on_remove_imports_changed(self, state):
+        self.remove_imports = state == Qt.Checked
 
     def _build_tab1(self):
         tab1_layout = QVBoxLayout(self.tab1)
@@ -381,18 +388,14 @@ class MainWindow(QMainWindow):
             child.setCheckState(0, state)
 
     def merge_selected_files(self):
-        output_file, _ = QFileDialog.getSaveFileName(self,
-            'Save Merged File', '', 'Text Files (*.txt);;All Files (*)')
+        output_file, _ = QFileDialog.getSaveFileName(self, 'Save Merged File', '', 'Text Files (*.txt);;All Files (*)')
         if output_file:
             exclude_patterns = self.get_exclude_patterns()
             convert_html_to_md = self.convert_html_checkbox.isChecked()
             css_selectors = self.css_selectors_input.text().strip()
-            file_merger = FileMerger(self.file_tree, self.directory_path,
-                exclude_patterns, self.db_manager, convert_html_to_md,
-                css_selectors)
+            file_merger = FileMerger(self.file_tree, self.directory_path, exclude_patterns, self.db_manager, convert_html_to_md, css_selectors, self.remove_imports)
             file_merger.merge_files(output_file)
-            QMessageBox.information(self, 'Merge Complete',
-                'Files have been merged successfully.')
+            QMessageBox.information(self, 'Merge Complete', 'Files have been merged successfully.')
 
     def reload_tree(self):
         self.save_project_settings()
