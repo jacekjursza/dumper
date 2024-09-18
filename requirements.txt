@@ -1,0 +1,5 @@
+PyQt5>=5.15.4
+astor>=0.8.1
+requests>=2.25.1
+beautifulsoup4>=4.9.3
+html2text>=2020.1.16
