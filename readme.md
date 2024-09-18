@@ -1,106 +1,81 @@
-# File Merger Application Documentation
+# File Merger Application
 
 ## Overview
 
-The File Merger Application is a Python-based desktop application that allows users to manage, analyze, and merge multiple Python files from a project directory. It also supports indexing and including content from remote web pages. The application uses SQLite for data storage and PyQt5 for the graphical user interface.
+The File Merger Application is a powerful Python-based desktop tool designed to aggregate and merge content from multiple sources into a single, comprehensive file. Its primary purpose is to create a consolidated knowledge base suitable for use with Large Language Models (LLMs).
+
+Key features include:
+- Merging multiple Python files from a project directory
+- Indexing and including content from remote web pages
+- Intelligent symbol extraction and filtering
+- User-friendly graphical interface for easy project management
+
+This application is particularly useful for researchers, developers, and data scientists who need to prepare large, diverse datasets for training or fine-tuning LLMs.
 
 ## Main Components
 
-1. **StartWindow**: The initial window that allows users to create new projects, open existing ones, or import projects.
-2. **MainWindow**: The primary interface for managing project files, symbols, and remote pages.
-3. **DatabaseManager**: Handles all database operations, including initialization, upgrades, and data retrieval/storage.
-4. **ProjectManager**: Manages project creation, loading, and recent project tracking.
-5. **FileTreeBuilder**: Builds a tree structure of the project files and directories.
-6. **FileMerger**: Responsible for merging selected files and remote pages into a single output file.
-7. **SymbolExtractor**: Extracts symbols (classes, functions, methods, variables) from Python files.
-8. **RemoteIndexer**: Fetches and indexes remote web pages.
+1. **StartWindow**: Initial project selection and creation interface
+2. **MainWindow**: Primary workspace for managing files, symbols, and remote content
+3. **DatabaseManager**: Handles data storage and retrieval
+4. **ProjectManager**: Manages project lifecycle and recent project tracking
+5. **FileTreeBuilder**: Creates a navigable structure of project files
+6. **FileMerger**: Combines selected content into a single output file
+7. **SymbolExtractor**: Analyzes Python files to extract relevant symbols
+8. **RemoteIndexer**: Fetches and processes content from web pages
 
-## Key Features
+## Installation
 
-1. **Project Management**
-   - Create new projects
-   - Open existing projects
-   - Import projects from .db files
-   - Track recent projects
+### Prerequisites
 
-2. **File Management**
-   - Display project files in a tree structure
-   - Filter files by type and exclude patterns
-   - Select/deselect files for merging
+- Python 3.7 or higher
+- pip (Python package installer)
 
-3. **Symbol Indexing**
-   - Extract symbols from Python files (classes, functions, methods, variables)
-   - Display symbols in a table with filtering options
-   - Include/exclude specific symbols from the merge output
+### Steps
 
-4. **Remote Page Indexing**
-   - Fetch and index remote web pages
-   - Support for crawling linked pages up to a specified depth
-   - Convert HTML to Markdown (optional)
-   - Apply CSS selectors to filter content
+1. Clone the repository or download the source code:
+   ```
+   git clone https://github.com/your-repo/file-merger-application.git
+   cd file-merger-application
+   ```
 
-5. **File Merging**
-   - Merge selected files and remote pages into a single output file
-   - Respect symbol inclusion/exclusion settings
-   - Handle remote page content based on user settings
+2. Create a virtual environment (optional but recommended):
+   - On Windows:
+     ```
+     python -m venv venv
+     venv\Scripts\activate
+     ```
+   - On macOS and Linux:
+     ```
+     python3 -m venv venv
+     source venv/bin/activate
+     ```
 
-## Detailed Component Descriptions
+3. Install the required dependencies:
+   ```
+   pip install -r requirements.txt
+   ```
 
-### StartWindow (start_window.py)
-- Displays recent projects
-- Provides options to open, create, or import projects
-- Initializes the main application window upon project selection
+4. Run the application:
+   ```
+   python main.py
+   ```
 
-### MainWindow (main_window.py)
-- Consists of three main tabs: File Selection, Symbol Index, and Remote Docs
-- Manages file tree display, symbol table, and remote page table
-- Handles user interactions for file selection, symbol filtering, and remote page management
-- Initiates file merging process
+## Usage
 
-### DatabaseManager (database_manager.py)
-- Initializes and upgrades the SQLite database schema
-- Manages CRUD operations for settings, symbols, and remote pages
-- Handles database queries for various application features
+1. Launch the application and create a new project or open an existing one.
+2. In the File Selection tab, choose the files you want to include in your merged output.
+3. Use the Symbol Index tab to view and filter extracted symbols from Python files.
+4. In the Remote Docs tab, add and manage remote web pages to include in your merged content.
+5. Click "Create output file" to generate your consolidated knowledge base file.
 
-### ProjectManager (project_manager.py)
-- Manages project creation, loading, and import
-- Tracks and updates recent projects list
-- Handles project file operations (copy, save)
+## Customization
 
-### FileTreeBuilder (file_tree_builder.py)
-- Builds a tree structure of project files and directories
-- Applies file type filters and exclusion patterns
-- Creates QTreeWidgetItems for GUI representation
+The application is highly customizable. You can modify the source code to add new features, change the user interface, or adjust the merging logic to better suit your specific needs for creating LLM knowledge bases.
 
-### FileMerger (file_merger.py)
-- Merges selected files and remote pages into a single output file
-- Processes Python files to include/exclude symbols based on user settings
-- Handles remote page content inclusion and optional HTML to Markdown conversion
+## Contributing
 
-### SymbolExtractor (symbol_extractor.py)
-- Parses Python files using the ast module
-- Extracts symbols (classes, functions, methods, variables) from Python code
-- Updates the database with extracted symbols
+Contributions to improve the File Merger Application are welcome. Please feel free to submit pull requests or open issues to suggest improvements or report bugs.
 
-### RemoteIndexer (remote_indexer.py)
-- Fetches remote web pages
-- Supports crawling linked pages up to a specified depth
-- Applies CSS selectors for content filtering (if specified)
-- Updates the database with fetched page information
+## License
 
-## Database Schema
-
-The application uses an SQLite database with the following main tables:
-
-1. **settings**: Stores project-wide settings
-2. **symbols**: Stores extracted symbols from Python files
-3. **remote_pages**: Stores information about indexed remote pages
-
-## User Workflow
-
-1. Start the application and select a project (create new, open existing, or import)
-2. In the File Selection tab, choose files to include in the merge
-3. In the Symbol Index tab, view and filter extracted symbols, choosing which to include/exclude
-4. In the Remote Docs tab, add remote URLs to index and include in the merge
-5. Initiate the merge process to create a single output file
-
+MIT
