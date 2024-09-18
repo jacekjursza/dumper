@@ -68,19 +68,36 @@ class FileMerger:
         return url
 
     def process_file(self, file_path, outfile, symbols_to_exclude, relative_path):
+        _, file_extension = os.path.splitext(file_path)
+        outfile.write(f'\n\n##---> {relative_path}\n\n')
+
+        if file_extension.lower() == '.py':
+            self.process_python_file(file_path, outfile, symbols_to_exclude)
+        else:
+            self.process_non_python_file(file_path, outfile)
+
+    def process_python_file(self, file_path, outfile, symbols_to_exclude):
         with open(file_path, 'r', encoding='utf-8') as infile:
             file_content = infile.read()
         try:
             tree = ast.parse(file_content, filename=file_path)
-        except SyntaxError:
-            logging.warning(f"Syntax error in file {file_path}, skipping.")
-            return
-        modifier = ASTModifier(symbols_to_exclude, file_path)
-        modified_tree = modifier.visit(tree)
-        ast.fix_missing_locations(modified_tree)
-        modified_code = astor.to_source(modified_tree)
-        outfile.write(f'\n\n##---> {relative_path}\n\n')
-        outfile.write(modified_code)
+            modifier = ASTModifier(symbols_to_exclude, file_path)
+            modified_tree = modifier.visit(tree)
+            ast.fix_missing_locations(modified_tree)
+            modified_code = astor.to_source(modified_tree)
+            outfile.write(modified_code)
+        except SyntaxError as e:
+            logging.warning(f'Syntax error in Python file {file_path}, including without modifications: {e}')
+            outfile.write(file_content)
+
+    def process_non_python_file(self, file_path, outfile):
+        try:
+            with open(file_path, 'r', encoding='utf-8') as infile:
+                file_content = infile.read()
+            outfile.write(file_content)
+        except Exception as e:
+            logging.warning(f'Error reading file {file_path}: {e}')
+            outfile.write(f'# Error reading file: {e}\n')
 
 
 class ASTModifier(ast.NodeTransformer):
