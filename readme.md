@@ -51,8 +51,8 @@ This tool was born out of a personal need to streamline the process of gathering
 
 1. Clone the repository or download the source code:
    ```bash
-   git clone https://github.com/your-repo/file-merger-application.git
-   cd file-merger-application
+   git clone https://github.com/jacekjursza/dumper.git
+   cd dumper
    ```
 
 2. Create a virtual environment (optional but recommended):
